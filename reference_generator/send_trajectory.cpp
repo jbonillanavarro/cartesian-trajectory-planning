@@ -94,19 +94,19 @@ tf2::Quaternion InverseQuaternion(const tf2::Quaternion &q)
     double z = q.z();
     double w = q.w();
 
-    double norm = sqrt(x * x + y * y + z * z + w * w);
+    double norm_sq = x*x + y*y + z*z + w*w;
 
-    if (norm == 0.0)
+    if (norm_sq < 1e-12)
     {
-        throw std::runtime_error("Cannot compute inverse of a zero-norm quaternion");
+        throw std::runtime_error("Cannot invert zero-norm quaternion");
     }
 
-    double x_inv = -x / norm;
-    double y_inv = -y / norm;
-    double z_inv = -z / norm;
-    double w_inv = w / norm;
-
-    return tf2::Quaternion(x_inv, y_inv, z_inv, w_inv);
+    return tf2::Quaternion(
+        -x / norm_sq,
+        -y / norm_sq,
+        -z / norm_sq,
+         w / norm_sq
+    );
 }
 
 tf2::Quaternion rot2Quat(const Eigen::Matrix3d &R, int m = 1)
