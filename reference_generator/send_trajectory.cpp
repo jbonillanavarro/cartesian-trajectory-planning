@@ -134,14 +134,60 @@ tf2::Quaternion rot2Quat(const Eigen::Matrix3d &R, int m = 1)
     return tf2::Quaternion(x, y, z, w);
 }
 
-// To be completed in Exercise 1
 std::pair<tf2::Vector3, tf2::Quaternion> PoseInterpolation(
     const Eigen::Matrix4d &start_pose,
     const Eigen::Matrix4d &end_pose,
     double lambda)
 {
-    tf2::Vector3 p_interp;    // Placeholder for the interpolated position
-    tf2::Quaternion q_interp; // Placeholder for the interpolated quaternion
+    // =========================
+    // 1. Position interpolation
+    // =========================
+
+    tf2::Vector3 p_start(start_pose(0,3), start_pose(1,3), start_pose(2,3)); // p0
+    tf2::Vector3 p_end(end_pose(0,3), end_pose(1,3), end_pose(2,3)); // p1
+
+    // p(t) = p0 + lambda(t) * (p1 - p0)
+    tf2::Vector3 p_interp = p_start + lambda * (p_end - p_start);
+
+    // =============================
+    // 2. Orientation interpolation
+    // =============================
+
+    Eigen::Matrix3d R_start = start_pose.block<3, 3>(0, 0); // R0
+    Eigen::Matrix3d R_end = end_pose.block<3, 3>(0, 0); // R1
+
+    // Calculating q from R
+    tf2::Quaternion q_start = rot2Quat(R_start);
+    tf2::Quaternion q_end = rot2Quat(R_end);
+
+    // qc = qa⁻¹ * qb
+    tf2::Quaternion q_relative = MuliplyQuaternions(InverseQuaternion(q_start), q_end); // qc = [wc, vc]
+
+    // Check that q_relative is less than 180 degrees to ensure the shortest path is taken
+    if (q_relative.w() < 0)
+    {
+        q_relative = tf2::Quaternion(-q_relative.x(), -q_relative.y(), -q_relative.z(), -q_relative.w());
+    }
+
+    // theta = 2 * acos(w)
+    double theta = 2.0 * std::acos(q_relative.w());
+    double sin_half_theta = std::sin(theta/2);
+    
+    tf2::Vector3 n;
+
+    if (sin_half_theta > 1e-5) {
+        // n = v / sin(theta/2)
+        n = tf2::Vector3(q_relative.x(), q_relative.y(), q_relative.z()) / sin_half_theta; 
+    } else {
+        n = tf2::Vector3(1.0, 0.0, 0.0);
+    }
+
+    double sin_lambda = std::sin(theta * lambda / 2);
+    double cos_lambda = std::cos(theta * lambda / 2);
+
+    tf2::Quaternion q_rot(n.x() * sin_lambda, n.y() * sin_lambda, n.z() * sin_lambda, cos_lambda);
+
+    tf2::Quaternion q_interp(MuliplyQuaternions(q_start, q_rot)); 
 
     return {p_interp, q_interp};
 }
