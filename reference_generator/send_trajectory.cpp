@@ -202,14 +202,89 @@ std::pair<tf2::Vector3, tf2::Quaternion> ComputeNextCartesianPose(
     double t)
 {
     // Check if t is within the valid range of [-T, T]
-    if (t < -T || t > T)
-    {
+    if (t < -T || t > T) {
         throw std::out_of_range("Parameter t is outside [-T, T]");
-    }
 
-    const tf2::Vector3 p_interp; // Placeholder for the interpolated position
-    tf2::Quaternion q_interp;    // Placeholder for the interpolated quaternion
-    return {p_interp, q_interp};
+    } else if (t <= -tau) {
+        double lambda = ((T + t) / T);
+        return PoseInterpolation(pose_0, pose_1, lambda);
+
+    } else if (t >= tau) {
+        double lambda = (t / T);
+        return PoseInterpolation(pose_1, pose_2, lambda);
+    }
+    else {
+        // ======================
+        // 1. Position smoothing
+        // ======================
+
+        double T1 = T;
+        double T2 = T;
+
+        double factor_1 = std::pow(tau - t, 2) / (4 * tau * T1);
+        double factor_2 = std::pow(tau + t, 2) / (4 * tau * T2);
+
+        tf2::Vector3 p0(pose_0(0,3), pose_0(1,3), pose_0(2,3));
+        tf2::Vector3 p1(pose_1(0,3), pose_1(1,3), pose_1(2,3));
+        tf2::Vector3 p2(pose_2(0,3), pose_2(1,3), pose_2(2,3));
+
+        tf2::Vector3 delta_p1 = p1 - p0;
+        tf2::Vector3 delta_p2 = p2 - p1;
+
+        const tf2::Vector3 p_interp = p1 - (factor_1 * delta_p1) + (factor_2 * delta_p2);
+
+        // =========================
+        // 2. Orientation smoothing
+        // =========================
+
+        Eigen::Matrix3d R_0 = pose_0.block<3, 3>(0, 0);
+        Eigen::Matrix3d R_1 = pose_1.block<3, 3>(0, 0);
+        Eigen::Matrix3d R_2 = pose_2.block<3, 3>(0, 0);
+
+        tf2::Quaternion q_0 = rot2Quat(R_0);
+        tf2::Quaternion q_1 = rot2Quat(R_1);
+        tf2::Quaternion q_2 = rot2Quat(R_2);
+
+        tf2::Quaternion q_01 = MuliplyQuaternions(InverseQuaternion(q_0), q_1); 
+        tf2::Quaternion q_12 = MuliplyQuaternions(InverseQuaternion(q_1), q_2);
+
+        if (q_01.w() < 0) q_01 = tf2::Quaternion(-q_01.x(), -q_01.y(), -q_01.z(), -q_01.w());
+        if (q_12.w() < 0) q_12 = tf2::Quaternion(-q_12.x(), -q_12.y(), -q_12.z(), -q_12.w());
+
+        // theta_01 and n_01
+        double theta_01 = 2 * std::acos(q_01.w());
+        double sin_half_theta_01 = std::sin(theta_01 / 2);
+        
+        tf2::Vector3 n_01;
+
+        if (sin_half_theta_01 > 1e-5) {
+            n_01 = tf2::Vector3(q_01.x() / sin_half_theta_01, q_01.y() / sin_half_theta_01, q_01.z() / sin_half_theta_01);
+        } else {
+            n_01 = tf2::Vector3(1, 0, 0);
+        }
+
+        // theta_12 and n_12
+        double theta_12 = 2 * std::acos(q_12.w());
+        double sin_half_theta_12 = std::sin(theta_12 / 2);
+        
+        tf2::Vector3 n_12;
+
+        if (sin_half_theta_12 > 1e-5) {
+            n_12 = tf2::Vector3(q_12.x() / sin_half_theta_12, q_12.y() / sin_half_theta_12, q_12.z() / sin_half_theta_12);
+        } else {
+            n_12 = tf2::Vector3(1, 0, 0);
+        }
+
+        double theta_k1 = -(factor_1) * theta_01;
+        double theta_k2 = factor_2 * theta_12;
+
+        tf2::Quaternion q_k1(n_01.x() * std::sin(theta_k1 / 2), n_01.y() * std::sin(theta_k1 / 2), n_01.z() * std::sin(theta_k1 / 2), std::cos(theta_k1 / 2));
+        tf2::Quaternion q_k2(n_12.x() * std::sin(theta_k2 / 2), n_12.y() * std::sin(theta_k2 / 2), n_12.z() * std::sin(theta_k2 / 2), std::cos(theta_k2 / 2));
+
+        tf2::Quaternion q_interp = MuliplyQuaternions(MuliplyQuaternions(q_1, q_k1), q_k2);
+        
+        return {p_interp, q_interp};
+    }   
 }
 
 int main(int argc, char **argv)
@@ -303,7 +378,7 @@ int main(int argc, char **argv)
     // Exercise 2 : Cartesian trajectory generation
     int tau = 1;
     int T = 10;
-    bool exercise_2 = false; // Set to true to execute Exercise 2
+    bool exercise_2 = true; // Set to true to execute Exercise 2
 
     if (exercise_2)
     {
