@@ -1,7 +1,7 @@
 // Author: Juan M. Gandarias
 // email: jmgandarias@uma.es
 // web: https://jmgandarias.com
-//
+// Modified by: Jorge B. Navarro
 // Inspired from the ros2_control Development Team demos
 
 #include <kdl/chainfksolverpos_recursive.hpp>
