@@ -6,7 +6,6 @@ This package was inspired by the [full tutorial for a 6 DOF robot](https://contr
 
 The package is structured as follows
 
-<img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
 
 * bringup: launch files and ros2_controller configuration
 * config/poses.yaml: YAML file with the poses to test the linear
@@ -35,3 +34,20 @@ ros2 launch cartesian_trajectory_planning send_trajectory.launch.py
 
 * Go to RobotModel>Links>tool0 (or the link that refers to the EE).
 * Habilitate Show Trail.
+
+
+## Questtions
+
+### What happens when you change the value of τ?
+
+
+### What happens when you change the value of T?
+
+
+### Can you change the velovity of the robot? How?
+
+
+
+
+<img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
+
