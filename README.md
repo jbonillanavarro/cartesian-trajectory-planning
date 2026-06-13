@@ -36,7 +36,7 @@ ros2 launch cartesian_trajectory_planning send_trajectory.launch.py
 * Habilitate Show Trail.
 
 
-## Questtions
+## Questions
 
 ### What happens when you change the value of τ?
 
@@ -48,6 +48,16 @@ ros2 launch cartesian_trajectory_planning send_trajectory.launch.py
 
 
 
+<img width="886" height="236" alt="image" src="https://github.com/user-attachments/assets/e69d2496-e454-48d7-814d-84a36de583d0" />
 
 <img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
+
+
+
+<img width="886" height="812" alt="image" src="https://github.com/user-attachments/assets/c4e28bc9-4653-409e-b652-7f586c8e4503" />
+
+
+
+
+
 
