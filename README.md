@@ -31,6 +31,19 @@ A continuación, se detalla de forma concisa la secuencia de trabajo llevada a c
 4. Cinemática Inversa y Trayectoria ROS: A través de un bucle temporal, se genera cada punto cartesiano y se convierte a coordenadas articulares mediante el solver de cinemática inversa (IK) de la librería KDL. Estos ángulos se empaquetan y publican como un mensaje estándar de ROS (JointTrajectory) dirigido al controlador del robot.
 5. Registro y Visualización: Finalmente, los datos de posición espacial y orientación (convertida a ángulos Roll, Pitch, Yaw) se escriben iterativamente en un archivo .csv para poder graficarlos externamente y validar la suavidad de las curvas resultantes.
 
+Se pueden observar los resultados de las simulaciones en las tres imagenes siguientes:
+
+<img width="886" height="236" alt="image" src="https://github.com/user-attachments/assets/e69d2496-e454-48d7-814d-84a36de583d0" />
+
+<img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
+
+
+
+<img width="886" height="812" alt="image" src="https://github.com/user-attachments/assets/c4e28bc9-4653-409e-b652-7f586c8e4503" />
+
+
+
+
 
 ## Questions
 
@@ -50,13 +63,7 @@ Sí. En este tipo de interpolación, la velocidad no se define directamente, sin
 * Modificando la distancia: Alejar los puntos espaciales definidos en el archivo poses.yaml manteniendo el mismo valor de $T$ obligará al robot a moverse a mayor velocidad para llegar a tiempo.
 
 
-<img width="886" height="236" alt="image" src="https://github.com/user-attachments/assets/e69d2496-e454-48d7-814d-84a36de583d0" />
 
-<img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
-
-
-
-<img width="886" height="812" alt="image" src="https://github.com/user-attachments/assets/c4e28bc9-4653-409e-b652-7f586c8e4503" />
 
 
 
