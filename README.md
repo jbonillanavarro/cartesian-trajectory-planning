@@ -9,8 +9,6 @@ The package is structured as follows
 * hardware: ros2_control hardware interface
 * reference_generator: A KDL-based reference generator for a fixed trajectory
 
-Find the documentation in [doc/userdoc.rst](doc/userdoc.rst) or on [control.ros.org](https://control.ros.org/master/doc/ros2_control_demos/example_7/doc/userdoc.html).
-
 ## Luanch trajectory 
 
 In one terminal, run:
