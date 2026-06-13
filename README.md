@@ -1,4 +1,4 @@
-# cartesian_trajectory_planning
+# LAB 1: cartesian_trajectory_planning
 
 The package is structured as follows
 
