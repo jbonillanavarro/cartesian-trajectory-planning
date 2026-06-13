@@ -11,13 +11,13 @@ The package is structured as follows
 
 ## Luanch trajectory 
 
-In one terminal, run:
+En un terminal se ejecuta:
 
 ```bash
 ros2 launch cartesian_trajectory_planning r6bot_controller.launch.py
 ```
 
-In another terminal, run:
+En otro terminal se ejecuta:
 
 ```bash
 ros2 launch cartesian_trajectory_planning send_trajectory.launch.py
@@ -41,21 +41,32 @@ Se pueden observar los resultados de las simulaciones en las tres imagenes sigui
 
 <img width="886" height="812" alt="image" src="https://github.com/user-attachments/assets/c4e28bc9-4653-409e-b652-7f586c8e4503" />
 
+Con el 
 
 
 
-
-## Questions
+## Preguntas
 
 ### What happens when you change the value of τ?
 El parámetro $\tau$ define la ventana de tiempo en la que se aplica el suavizado alrededor del punto intermedio $P_1$.
 * Si aumentas $\tau$: La curva de transición es más suave (requiere menor aceleración), pero el robot se desvía más del punto de paso exacto $P_1$.
 * Si disminuyes $\tau$: El robot pasa más cerca de $P_1$, pero la curva es más cerrada, lo que exige cambios de velocidad más bruscos y mayor esfuerzo a los motores.
 
+Por ejemplo con el valor de τ = 2 se obtiene:
+<img width="1008" height="967" alt="tau2" src="https://github.com/user-attachments/assets/37380eb8-d3d6-4b19-8861-63e08977a2b4" />
+
+<img width="1003" height="969" alt="tau2_orient" src="https://github.com/user-attachments/assets/5202d190-4c85-4559-b401-f7330bc69d47" />
+
 ### What happens when you change the value of T?
 El parámetro $T$ representa el tiempo total asignado para recorrer un segmento lineal de la trayectoria.
 * Si aumentas $T$: El robot dispone de más tiempo para cubrir la misma distancia, por lo que se mueve más despacio.
 * Si disminuyes $T$: El robot debe cubrir la misma distancia en menos tiempo, por lo que se mueve más rápido.
+
+Por ejemplo con el valor de T = 5 se obtiene:
+<img width="1008" height="964" alt="T10_pos" src="https://github.com/user-attachments/assets/fe051f67-55a1-46fb-b848-80c15f07c5f9" />
+
+<img width="1006" height="967" alt="T20_orient" src="https://github.com/user-attachments/assets/f134873d-e90b-4b89-87e4-b67fec74e025" />
+
 
 ### Can you change the velocity of the robot? How?
 Sí. En este tipo de interpolación, la velocidad no se define directamente, sino que es el resultado del espacio a recorrer dividido por el tiempo. Se puede cambiar dos maneras:
