@@ -45,7 +45,7 @@ El parámetro $T$ representa el tiempo total asignado para recorrer un segmento 
 * Si disminuyes $T$: El robot debe cubrir la misma distancia en menos tiempo, por lo que se mueve más rápido.
 
 ### Can you change the velocity of the robot? How?
-Sí. En este tipo de interpolación, la velocidad no se define directamente, sino que es el resultado del espacio a recorrer dividido por el tiempo. Puedes cambiarla de dos maneras:
+Sí. En este tipo de interpolación, la velocidad no se define directamente, sino que es el resultado del espacio a recorrer dividido por el tiempo. Se puede cambiar dos maneras:
 * Modificando el tiempo ($T$): Reducir $T$ para el mismo segmento hará que el robot vaya más rápido.
 * Modificando la distancia: Alejar los puntos espaciales definidos en el archivo poses.yaml manteniendo el mismo valor de $T$ obligará al robot a moverse a mayor velocidad para llegar a tiempo.
 
