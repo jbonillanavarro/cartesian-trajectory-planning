@@ -6,6 +6,8 @@ This package was inspired by the [full tutorial for a 6 DOF robot](https://contr
 
 The package is structured as follows
 
+<img width="886" height="798" alt="image" src="https://github.com/user-attachments/assets/7322df5a-0f87-4e01-8180-2aa8c9d8cd02" />
+
 * bringup: launch files and ros2_controller configuration
 * config/poses.yaml: YAML file with the poses to test the linear
 * controller: a controller for the 6-DOF robot
