@@ -245,11 +245,17 @@ std::pair<tf2::Vector3, tf2::Quaternion> ComputeNextCartesianPose(
         tf2::Quaternion q_1 = rot2Quat(R_1);
         tf2::Quaternion q_2 = rot2Quat(R_2);
 
+        // Cálculo de las rotaciones relativas (q_01 y q_12)
+
         tf2::Quaternion q_01 = MuliplyQuaternions(InverseQuaternion(q_0), q_1); 
         tf2::Quaternion q_12 = MuliplyQuaternions(InverseQuaternion(q_1), q_2);
 
+        // Normalización de camino
+
         if (q_01.w() < 0) q_01 = tf2::Quaternion(-q_01.x(), -q_01.y(), -q_01.z(), -q_01.w());
         if (q_12.w() < 0) q_12 = tf2::Quaternion(-q_12.x(), -q_12.y(), -q_12.z(), -q_12.w());
+
+        // Extracción de Eje y Ángulo
 
         // theta_01 and n_01
         double theta_01 = 2 * std::acos(q_01.w());
@@ -275,11 +281,17 @@ std::pair<tf2::Vector3, tf2::Quaternion> ComputeNextCartesianPose(
             n_12 = tf2::Vector3(1, 0, 0);
         }
 
+        // Aplicación de los factores de suavizado 
+
         double theta_k1 = -(factor_1) * theta_01;
         double theta_k2 = factor_2 * theta_12;
 
+        // Creación de los cuaterniones de ajuste
+        
         tf2::Quaternion q_k1(n_01.x() * std::sin(theta_k1 / 2), n_01.y() * std::sin(theta_k1 / 2), n_01.z() * std::sin(theta_k1 / 2), std::cos(theta_k1 / 2));
         tf2::Quaternion q_k2(n_12.x() * std::sin(theta_k2 / 2), n_12.y() * std::sin(theta_k2 / 2), n_12.z() * std::sin(theta_k2 / 2), std::cos(theta_k2 / 2));
+
+        // Concatenación de rotaciones
 
         tf2::Quaternion q_interp = MuliplyQuaternions(MuliplyQuaternions(q_1, q_k1), q_k2);
         
